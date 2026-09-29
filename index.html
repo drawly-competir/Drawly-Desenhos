@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawly - Batalha</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#FFF7ED; font-family:'Patrick Hand', cursive; min-height:100vh; display:flex; justify-content:center; padding:20px}
+  .bg{position:fixed; inset:0; z-index:-2; background:#FFF7ED; background-image: radial-gradient(#FFB6D9 1.5px, transparent 1.5px); background-size:28px 28px;}
+  .doodle{position:fixed; font-size:90px; opacity:0.18; z-index:-1; animation: float 6s ease-in-out infinite; pointer-events:none}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-20px) rotate(5deg)}}
+  .d1{top:5%; left:5%} .d2{top:15%; right:8%; font-size:110px} .d3{bottom:10%; left:10%} .d4{bottom:20%; right:5%}
+  .app{max-width:480px; width:100%; background:#FFF; border:4px solid #000; border-radius:32px; padding:32px; box-shadow:12px 12px 0 #000; position:relative}
+  .app::before{content:attr(data-tema); position:absolute; top:-18px; left:20px; background:#FF6B9D; color:#fff; padding:6px 14px; border:3px solid #000; border-radius:20px; font-family:'Fredoka'; font-weight:700; font-size:14px; transform:rotate(2deg)}
+  .titulo{font-family:'Fredoka'; font-size:52px; line-height:0.9; color:#000; margin-top:15px}
+  .titulo span{color:#FF6B9D; -webkit-text-stroke:2px #000; text-shadow:4px 4px 0 #000}
+  .sub{font-size:22px; color:#444; margin:15px 0 25px 0}
+  input{width:100%; padding:18px; margin-bottom:14px; border:3px solid #000; border-radius:16px; font-family:'Patrick Hand'; font-size:20px; background:#FFFBEB; outline:none}
+  .btn{width:100%; padding:20px; background:#000; color:#fff; font-family:'Fredoka'; font-size:22px; font-weight:700; border:3px solid #000; border-radius:18px; cursor:pointer; box-shadow:6px 6px 0 #FF6B9D}
+  .btn-atelie{background:#A7F3D0; color:#000; border:3px dashed #000; box-shadow:6px 6px 0 #000}
+  .btn-zap{background:#25D366; color:#000; border:3px solid #000; box-shadow:6px 6px 0 #000; margin-top:12px}
+  .selo{background:#A7F3D0; border:3px solid #000; padding:20px; border-radius:20px; text-align:center; margin-top:20px; display:none}
+  .selo.ativo{display:block; animation: pop 0.5s cubic-bezier(.175,.885,.32,1.275)}
+  @keyframes pop{0%{transform:scale(0)} 100%{transform:scale(1)}}
+  .status-ok{background:#A7F3D0; border:3px solid #000; border-radius:16px; padding:12px; text-align:center; font-family:'Fredoka'; margin-bottom:18px; transform:rotate(-1deg)}
+  .manifesto{font-size:21px; line-height:1.4; background:#FEF3C7; border:3px solid #000; border-radius:20px; padding:20px; margin-top:10px}
+  .contador{font-family:'Fredoka'; font-size:16px; text-align:center; margin-top:18px; background:#000; color:#fff; display:inline-block; padding:6px 14px; border-radius:20px; position:relative; left:50%; transform:translateX(-50%)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="doodle d1">🎨</div><div class="doodle d2">✨</div><div class="doodle d3">🔥</div><div class="doodle d4">⭐</div>
+
+<div class="app" id="appBox" data-tema="CARREGANDO...">
+  <div id="tela1">
+    <div class="titulo">BATALHA <span>DRAWLY</span></div>
+    <div class="sub" id="subTema">Tema: </div>
+    <input id="nome" placeholder="Seu nome artístico">
+    <input id="insta" placeholder="Seu @ do Instagram">
+    <input id="zap" placeholder="WhatsApp">
+    <button class="btn" onclick="salvarCadastro()">QUERO MINHA VAGA! →</button>
+    <div class="contador" id="contador"></div>
+  </div>
+
+  <div id="tela2" class="hidden">
+    <div class="titulo" style="font-size:42px">Ative seu <span>SELO</span></div>
+    <div class="sub">Olá <b id="nomeExibe"></b>! Só falta seguir o ateliê 💌</div>
+    <button class="btn-atelie btn" onclick="abrirInsta()">SEGUIR @drawly.oficial</button>
+    <div id="selo" class="selo">
+      <div style="font-family:Fredoka; font-size:24px;">✓ SELO ATIVADO!</div>
+      <div>Você está oficialmente na batalha!</div>
+      <button class="btn" onclick="finalizar()" style="margin-top:12px; background:#FF6B9D">VER MINHAS REGRAS →</button>
+    </div>
+  </div>
+
+  <div id="tela3" class="hidden">
+    <div class="status-ok">✅ VOCÊ ESTÁ NA BATALHA!</div>
+    <div class="titulo" style="font-size:32px">OLÁ, <span id="nomeFinal">ARTISTA</span>!</div>
+    <div class="sub">Tema da vez: <b id="temaFinal"></b></div>
+    <div class="manifesto"><b>1. CRIE ATÉ 18/10</b><br>Tema <span class="temaTxt"></span>. Envie no DIRECT da @drawly.oficial<br><br><b>2. POSTE 19 E 20/10</b><br>Como COLABORADOR com @drawly.oficial<br><br><b>3. FINAL 25/10</b></div>
+    <button class="btn-zap btn" onclick="entrarComunidade()">💬 ENTRAR NA COMUNIDADE DO ATELIÊ</button>
+    <div style="font-size:16px; text-align:center; margin-top:8px">Entra lá pra não perder os próximos temas!</div>
+    <button class="btn" style="background:#A7F3D0; color:#000; margin-top:15px" onclick="abrirInsta()">ABRIR @drawly.oficial</button>
+  </div>
+</div>
+
+<script>
+  const TEMA_ATUAL = "ANIME & CARTOON & DOCE";
+  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbwdJGaYr9b_yO0krEHCb7NLjWDey5LvLXaF8y9KhTGI5kTVv7y3W8s0G4sZGaQj3kE/exec";
+  const LINK_COMUNIDADE = "https://chat.whatsapp.com/J5KVZC0BznnHS4YI0we4oM";
+  const LIMITE = new Date("2026-10-18T23:59:59").getTime();
+
+  document.getElementById('appBox').setAttribute('data-tema', TEMA_ATUAL);
+  document.getElementById('subTema').innerText = "Tema: " + TEMA_ATUAL + ". Mostre seu melhor!";
+  document.getElementById('temaFinal').innerText = TEMA_ATUAL;
+  document.querySelectorAll('.temaTxt').forEach(e=>e.innerText=TEMA_ATUAL);
+  setInterval(()=>{const el=document.getElementById('contador'); if(!el) return; const d=LIMITE-Date.now(); const dias=Math.floor(d/86400000); const h=Math.floor(d/3600000)%24; el.innerText=`${dias}d ${h}h pra fechar!`},1000);
+
+  function enviar(dados){ fetch(URL_PLANILHA, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body: JSON.stringify(dados) }); }
+  function salvarCadastro(){
+    const nome=document.getElementById('nome').value.trim();
+    const insta=document.getElementById('insta').value.trim();
+    const zap=document.getElementById('zap').value.trim();
+    if(!nome||!insta){alert("Preencha nome e @"); return;}
+    const user={nome,insta,zap,selo:"NAO", tema:TEMA_ATUAL, data:new Date().toLocaleString('pt-BR')};
+    localStorage.setItem('drawly_user', JSON.stringify(user)); enviar(user);
+    document.getElementById('nomeExibe').innerText=nome; irPara(2);
+  }
+  function finalizar(){ const user=JSON.parse(localStorage.getItem('drawly_user')); user.selo="SIM"; localStorage.setItem('drawly_user', JSON.stringify(user)); enviar(user); mostrarTelaFinal(user); }
+  function mostrarTelaFinal(user){ document.getElementById('nomeFinal').innerText=user.nome.toUpperCase(); irPara(3); }
+  function irPara(n){[1,2,3].forEach(i=>document.getElementById('tela'+i).classList.add('hidden')); document.getElementById('tela'+n).classList.remove('hidden')}
+  function abrirInsta(){window.open("https://instagram.com/drawly.oficial","_blank"); setTimeout(()=>document.getElementById('selo').classList.add('ativo'),800)}
+  function entrarComunidade(){ window.open(LINK_COMUNIDADE, "_blank"); }
+</script>
+</body>
+</html>
